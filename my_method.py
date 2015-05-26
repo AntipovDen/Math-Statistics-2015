@@ -79,9 +79,7 @@ def analizeExperimentMyMethod(x, f):
 def bhattacharyyaDistance(distributions):
     f1, f2 = distributions
     s = sum([sqrt(f1[i] * f2[i]) for i in range(n)])
-    if s == 0:
-        return -float('infinity')
-    return log(s)
+    return s
 
 ##Evolution
 populationSize = 100
@@ -115,7 +113,7 @@ def crossingover(parents):
 def evolutionaryMinimizer(f, length):
     population = [generateIndividual() for i in range(populationSize)]
     for i in range(1000):
-        if i % 10 == 0:
+        if i % 100 == 0:
             print(i)
         new_generation = []
         for i in range(newGenSize // 2):
@@ -152,6 +150,8 @@ def mutationMinimizer(f, length):
 
 f1, f2 = generateDistribution(), generateDistribution()
 x, f = generateExperiment(f1, f2, l, switch)
+
+realBhattacharyyaDistance = bhattacharyyaDistance(([f1[1]] + [f1[i] - f1[i - 1] for i in range(1, n)], [f2[1]] + [f2[i] - f2[i - 1] for i in range(1, n)]))
 print(x)
 print(f)
 
@@ -160,7 +160,7 @@ def vectorResult(vector):
     return analizeExperimentMyMethod(x, vector)
 
 def vectorResultBhattacharyya(vector):
-    return bhattacharyyaDistance(getDistributions(x, vector))
+    return abs(bhattacharyyaDistance(getDistributions(x, vector)) - realBhattacharyyaDistance)
 
 
 result = evolutionaryMinimizer(vectorResultBhattacharyya, l)[1]
@@ -168,6 +168,7 @@ print(result)
 print(f)
 
 print("result:", bhattacharyyaDistance(getDistributions(x, result)),
-      "real distribution:", bhattacharyyaDistance(getDistributions(x, f)))
+      "real distribution:", realBhattacharyyaDistance,
+      "difference:", vectorResultBhattacharyya(result))
 # f = [randint(0, 1) for i in range(l)]
 # print(analizeExperimentMyMethod(x, f))
