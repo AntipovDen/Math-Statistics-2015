@@ -4,9 +4,6 @@ L=presentation
 
 if [ "$1" != "clean" ];
 then
-    cd pic
-    for i in *.mp; do mpost "$i"; done
-    cd ..
     pdflatex $L
     pdflatex $L
     pdflatex $L
