@@ -1,0 +1,128 @@
+\documentclass[hyperref=unicode,graphics=pdflatex,13pt]{beamer}
+
+\mode<presentation>
+{
+  \usetheme{default}
+%  \usecolortheme{crane}
+  \setbeamercovered{invisible}
+  \setbeamertemplate{footline}{\hfill\insertframenumber/\inserttotalframenumber}
+  \setbeamersize{text margin left=0.4cm,sidebar width left=0cm}
+}
+
+\graphicspath{{pic/}}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T2A]{fontenc}
+\usepackage[english, russian]{babel}
+\usepackage{times}
+\usepackage{color, colortbl}
+\definecolor{res}{RGB}{255, 215, 0}
+\definecolor{olivegreen}{RGB}{38, 141, 38}
+\usepackage{xspace}
+\usepackage{tabularx}
+
+\beamertemplatenavigationsymbolsempty
+%\setbeamerfont{page number in head/foot}{size=\HUGE}
+
+
+\title[Dishonest Casino Problem\ldots]{Dishonest Casino Problem
+}
+
+\author[\mbox{V. Mironovich, D. Antipov, V. Volochay}]
+{V. Mironovich \and D. Antipov \and V. Volochay}
+\institute{\inst{1}ITMO University
+}
+\date[June 4]{June 4, 2015}
+
+\AtBeginSection[] {
+  \begin{frame}<beamer>{}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+
+\begin{document}
+
+\begin{frame}[noframenumbering,plain]
+  \titlepage
+\end{frame}
+
+\begin{frame}[noframenumbering,plain]
+  \tableofcontents
+\end{frame}
+
+\section{Introduction}
+\subsection{Dishonest Casino Problem}
+\begin{frame}{Dishonest Casino Problem}
+\begin{itemize}
+   \item Two sources of random values
+   \item They switch in some unknown moments of time
+   \item They generate a sequence
+   \item The problem is to detect the switches
+\end{itemize}
+\end{frame} 
+
+\subsection{Our first approaches}
+\begin{frame}{Main idea}
+\begin{itemize}
+   \item Generate a binary vector $S$ and assume:
+   \begin{itemize}
+   \item $S_t = 0$, if $X_t$ was given by first source
+   \item $S_t = 1$, if $X_t$ was given by second source
+   \end{itemize}
+   \item Optimize this vector using evolutionary algorithms
+   \item What fitness should we choose?
+\end{itemize}
+\end{frame}
+
+\begin{frame}{First decisions}
+\begin{itemize}
+   \item Minimize the avarage deviation of $p(S_i=s | X_i = x)$ calculated by the Bayes theorem from this probabilities calculated by assumption vector
+   \item Maximize the Bhattacharyya distance beetween the sourse distributions:
+   $$D_B(p, q) = -\ln{\sum_{\omega \in \Omega} \sqrt{p(\omega)q(\omega)}}$$
+   \item %TODO: Tut Vika rasskazhet pro Kolmagorova
+\end{itemize}
+\end{frame}
+
+\begin{frame}{First fails}
+\begin{itemize}
+   \item This methods found the optimal solutions when $p(X_i = x | S_i = 0) = 0 \oplus p(X_i = x | S_i = 1) = 0$
+   \item Assume that $p(X_i = x | S_i = s) \ge q > 0$. $q$ may be $\frac{1}{len(X)}$
+   \item New approach found solutions with more optimal fitness functions that had a poor correlation with the real solution
+   \item We can assume that we know the fitness of real solution and optimize the absolute difference of fitnesses
+\end{itemize}
+\end{frame}
+
+\section{Solution}
+\subsection{Sliding windows}
+\begin{frame}{One sliding window}
+\begin{itemize}
+   \item Choose the length of the window equal to the expected length of non-switching subsequence of $S$
+   \item We can calculate the expectation for every position of window of the in-window sequence
+   \item It gives us nothing even after smoothing the expectations:
+   %TODO: some pictures here 
+\end{itemize}
+\end{frame}
+
+\begin{frame}{One sliding window}
+\begin{itemize}
+   \item Basing on calculated expectations we can try to assume that expectations of sources are the max and min expectation
+   \item With this assumption we can try to find probabilities of each source on every step
+   \item %TODO check the probability again or say that it is useless
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Two Sliding Windows}
+\begin{itemize}
+   \item Two sliding windows without interval between them
+   \item Check the difference between them:
+   \begin{itemize}
+      \item difference of expectations
+      \item Bhattacharyya distance
+   \end{itemize}
+   \item Nothing of it correlates with the real $S$
+\end{itemize}
+
+\end{frame}
+
+\end{document}
+
