@@ -82,8 +82,8 @@ def bhattacharyyaDistance(distributions):
     return s
 
 ##Evolution
-populationSize = 100
-newGenSize = 80
+populationSize = 50
+newGenSize = 40
 
 def generateIndividual():
     x =[]
