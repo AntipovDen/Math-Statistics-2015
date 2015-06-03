@@ -25,20 +25,19 @@
 %\setbeamerfont{page number in head/foot}{size=\HUGE}
 
 
-\title[Dishonest Casino Problem\ldots]{Dishonest Casino Problem
-}
+\title[Dishonest Casino Problem\ldots]{Solving Dishonest Casino Problem \\ With Evolutionary Algorithms}
 
 \author[\mbox{V. Mironovich, D. Antipov, V. Volochay}]
 {V. Mironovich \and D. Antipov \and V. Volochay}
-\institute{\inst{1}ITMO University
-}
+\institute[Университет ИТМО]{{\includegraphics[height=0.2\textwidth]{pic/itmo-dots-en-small.pdf}}\\~\\~Saint-Petersburg, Russia}
 \date[June 4]{June 4, 2015}
 
-\AtBeginSection[] {
-  \begin{frame}<beamer>{}
-    \tableofcontents[currentsection]
-  \end{frame}
-}
+% NOTE: I HATE USELESS TOCS
+%\AtBeginSection[] {
+%  \begin{frame}<beamer>{}
+%    \tableofcontents[currentsection]
+%  \end{frame}
+%}
 
 \begin{document}
 
@@ -46,53 +45,116 @@
   \titlepage
 \end{frame}
 
-\begin{frame}[noframenumbering,plain]
-  \tableofcontents
-\end{frame}
+% NOTE
+%\begin{frame}[noframenumbering,plain]
+%  \tableofcontents
+%\end{frame}
 
 \section{Introduction}
-\subsection{Dishonest Casino Problem}
-\begin{frame}{Dishonest Casino Problem}
+
+% NOTE
+%subsection too much
+%\subsection{Dishonest Casino Problem}
+\begin{frame}{Original Dishonest Casino Problem}
 \begin{itemize}
-   \item Two sources of random values
-   \item They switch in some unknown moments of time
-   \item They generate a sequence
-   \item The problem is to detect the switches
+   \item Casino uses two dices
+   \item One is fair, the other one is weighted to produce more sixes
+   \item Casino switches the dices at unknown times
+   \item We know probabilities for Markov process and dice distributions
+   \item Detect switch times
 \end{itemize}
+
+\centering{Solved with DynProg or previosly reported algorithms.}
 \end{frame} 
 
-\subsection{Our first approaches}
-\begin{frame}{Main idea}
-\begin{itemize}
-   \item Generate a binary vector $S$ and assume:
-   \begin{itemize}
-   \item $S_t = 0$, if $X_t$ was given by first source
-   \item $S_t = 1$, if $X_t$ was given by second source
-   \end{itemize}
-   \item Optimize this vector using evolutionary algorithms
-   \item What fitness should we choose?
-\end{itemize}
+\begin{frame}{Proposed statement of DCP}
+ \begin{itemize}
+  \item Still the same two dices
+  \item We know nothing about probabilities and distributions
+  \item The underlying process is still the same
+  \item Detect switch times
+  \end{itemize}
+
 \end{frame}
 
-\begin{frame}{First decisions}
+% NOTE: Somethign something
+%\begin{frame}{Group work process}
+% \begin{itemize}
+%  \item Everyone worked on his own solution
+%  \item Exchanging ideas and suggestions
+% \end{itemize}
+%\end{frame}
+
+
+\section{Solution} %kay m8 
+\begin{frame}{Solution}
+  \begin{itemize}
+   \item Let's try something with evolutionary algorithm
+   \item Why? Because we can...probably
+   \item Logic from evolution in nature
+   \item Represent individual => Mutate and Reproduce => Optimize fitness function => ??? => Profit
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{Evolutionary algorithm}
+ \begin{itemize}
+  \item Generate a binary vector $S$ and assume:
+   \begin{itemize}
+   \item $S_t = 0$, if $X_t$ was given by first generator
+   \item $S_t = 1$, if $X_t$ was given by second generator
+   \end{itemize}
+  \item Mutation: flipping random bit
+  \item Crossover: single-point exchange of tails
+ \end{itemize}
+\end{frame}
+
+\begin{frame}{Choosing fitness}
 \begin{itemize}
-   \item Minimize the avarage deviation of $p(S_i=s | X_i = x)$ calculated by the Bayes theorem from this probabilities calculated by assumption vector
+   \item Minimize the average deviation of $p(S_i=s | X_i = x)$ calculated by the Bayes theorem from this probabilities calculated by assumption vector
    \item Maximize the Bhattacharyya distance beetween the sourse distributions:
    $$D_B(p, q) = -\ln{\sum_{\omega \in \Omega} \sqrt{p(\omega)q(\omega)}}$$
    \item %TODO: Tut Vika rasskazhet pro Kolmagorova
 \end{itemize}
+
 \end{frame}
 
-\begin{frame}{First fails}
+\section{Failures 1}
+\begin{frame}{Failures: Conditional probability}
+ \begin{itemize}
+  %TODO: Denis, try to describe why using conditional probability doesn't work in this slide, maybe put examples, like in next mine
+  \item Minimizing the deviation of conditional probability leads to getting ...
+ \end{itemize}
+
+\end{frame}
+
+\begin{frame}{Failures: Bhattacharyya distance}
 \begin{itemize}
-   \item This methods found the optimal solutions when $p(X_i = x | S_i = 0) = 0 \oplus p(X_i = x | S_i = 1) = 0$
-   \item Assume that $p(X_i = x | S_i = s) \ge q > 0$. $q$ may be $\frac{1}{len(X)}$
-   \item New approach found solutions with more optimal fitness functions that had a poor correlation with the real solution
-   \item We can assume that we know the fitness of real solution and optimize the absolute difference of fitnesses
+ \item Bhattacharyya distance is prone to overfitting. Falls into making two generators ``absolutely distinct'' and the distance equal to $\infty$
+ \item Try to force the equality of generators' domains by making $p(x) = max(1/len(S), p(x_i))$
+ \item Works better but still overfits
 \end{itemize}
 \end{frame}
 
-\section{Solution}
+\begin{frame}{Overfitting}
+ %TODO overfitting example
+\end{frame}
+
+\begin{frame}{Overfitting}
+ \begin{itemize}
+  \item Assume we know Bhattacharyya distance for our sequence
+  \item Optimize to it ($ abs(bchd(S)-actual) $
+ %TODO example here
+ \end{itemize}
+
+\end{frame}
+
+%TODO Assuming that kolmogorov is shitty too, insert something here
+
+
+\section{Current ideas in work}
+
+%TODO hey, describe your shit here
 \subsection{Sliding windows}
 \begin{frame}{One sliding window}
 \begin{itemize}
@@ -123,6 +185,29 @@
 \end{itemize}
 
 \end{frame}
+
+\subsection{Produce minimum number of values}
+%TODO frames:
+%	- assumption of minimum number of generations
+%	- still using Bhattacharyya
+%	- it ``kinda'' works slide
+% 	- leniency allowed, results
+
+\subsection{Whatever Vika is doing}
+%TODO may swap places in presentation
+
+\section{Conclusion} %\sextion lololo
+
+\begin{frame}{Conclusion}
+ \begin{itemize}
+  \item such conclusion
+  \item much results
+  \item very schientificz
+  \item wow
+ \end{itemize}
+
+\end{frame}
+
 
 \end{document}
 
