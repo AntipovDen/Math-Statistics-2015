@@ -20,6 +20,7 @@
 \definecolor{olivegreen}{RGB}{38, 141, 38}
 \usepackage{xspace}
 \usepackage{tabularx}
+\usepackage{listings}
 
 \beamertemplatenavigationsymbolsempty
 %\setbeamerfont{page number in head/foot}{size=\HUGE}
@@ -92,7 +93,8 @@
    \item Let's try something with evolutionary algorithm
    \item Why? Because we can...probably
    \item Logic from evolution in nature
-   \item Represent individual => Mutate and Reproduce => Optimize fitness function => ??? => Profit
+   \item $\rightarrow$ Represent individual \\ $\hookrightarrow$ Mutate and Reproduce \\
+   $\hookrightarrow$ Optimize fitness function \rotatebox[origin=c]{-180}{$\hookrightarrow$} \\ $\hookrightarrow$ Assume the best as the answer
   \end{itemize}
 
 \end{frame}
@@ -156,8 +158,6 @@
    \item Guessed: 12 out of 25, 48.0\%
    \item Wrong: 39 out of 51, 76\%
   \end{itemize}
-
-
   \end{itemize}
 \end{frame}
 
@@ -191,11 +191,11 @@
 \begin{itemize}
    \item Assume that we know the probability of switching beetween generators
    \item Choose the length of the window equal to the expected length of non-switching subsequence of $S$
-   \item We can calculate the expectation of the in-window sequencefor every window position
+   \item We can calculate the expectation of the in-window sequence for every window position
    \item It gives us nothing even after smoothing the expectations:
    \end{itemize}
    \begin{tabular}{cc}
-      Without smoohing & With smoothing \\
+      Without smoothing & With smoothing \\
       \includegraphics[width=5cm]{window_expectations.png} &
       \includegraphics[width=5cm]{window_expectations_smoothed.png}
    \end{tabular}
@@ -240,16 +240,30 @@
  \includegraphics[width = 5cm]{two_windows_expectation.png} &
  \includegraphics[width = 5cm]{two_windows_bhattacharyya.png}
 \end{tabular}
-
-
 \end{frame}
 
 \subsection{Produce minimum number of values}
-%TODO frames:
-%	- assumption of minimum number of generations
-%	- still using Bhattacharyya
-%	- it ``kinda'' works slide
-% 	- leniency allowed, results
+\begin{frame}{Minimum number of emissions}
+ \begin{itemize}
+  \item Assume we have a number of minimum generations for generator, before it can switch
+  \item Assume we know that number
+  \item Still optimizing as before
+ \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{So what?}
+ \begin{itemize}
+  \item Helps keeping number of switches close to the original
+  \item But does not really work
+\item Error piles up
+\item Correctly shows which generator produced the number in sequence in 75\% of cases
+ \end{itemize}
+
+ \tiny\begin{lstlisting}
+0...00011...111000...00011...1100000...000111111000000000...0000111111111
+0...01111...110000...00111...1111000...000111111111111000...0000000000001
+ \end{lstlisting}
+\end{frame}
 
 \subsection{Whatever Vika is doing}
 %TODO may swap places in presentation
