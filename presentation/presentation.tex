@@ -122,8 +122,13 @@
 \section{Failures 1}
 \begin{frame}{Failures: Conditional probability}
  \begin{itemize}
-  %TODO: Denis, try to describe why using conditional probability doesn't work in this slide, maybe put examples, like in next mine
-  \item Minimizing the deviation of conditional probability leads to getting ...
+  \item We can get distributions of the generators using assumption
+  \item Calculate the conditional probabilities using Bayes Theorem:
+  $$p(S_t = s | X_t = x) = \frac{p(X_t = t | S_t = s) p(S_t = s)}{\sum_{i \in \{0, 1\}}p(X_t = t | S_t = i) p(S_t = i)}$$
+  \item Compare to conditional probabilities using assumption:
+  $$p(S_t = s | X_t = x) = \frac{count(t: X_t = x \wedge S_t = s)}{count(t: X_t = x)}$$
+  \item Minimize an avarage sqare deviation
+  \item It doesn't give good results because it actually minimizes the deviation of generators. But in original problem usual dice have quite big deviation.
  \end{itemize}
 
 \end{frame}
@@ -153,25 +158,45 @@
 
 
 \section{Current ideas in work}
-
-%TODO hey, describe your shit here
+%TODO recent for calling my work shit
 \subsection{Sliding windows}
 \begin{frame}{One sliding window}
 \begin{itemize}
+   \item Assume that we know the probability of switching beetween generators
    \item Choose the length of the window equal to the expected length of non-switching subsequence of $S$
-   \item We can calculate the expectation for every position of window of the in-window sequence
+   \item We can calculate the expectation of the in-window sequencefor every window position
    \item It gives us nothing even after smoothing the expectations:
-   %TODO: some pictures here 
-\end{itemize}
+   \end{itemize}
+   \begin{tabular}{cc}
+      Without smoohing & With smoothing \\
+      \includegraphics[width=5cm]{window_expectations.png} &
+      \includegraphics[width=5cm]{window_expectations_smoothed.png}
+   \end{tabular}
+
+
 \end{frame}
 
 \begin{frame}{One sliding window}
 \begin{itemize}
    \item Basing on calculated expectations we can try to assume that expectations of sources are the max and min expectation
-   \item With this assumption we can try to find probabilities of each source on every step
-   \item %TODO check the probability again or say that it is useless
+   \item With this assumption we can try to find probabilities of each source on every step:
+   \footnotesize$$p(S_t = 0 | X_t = x) = p(S_{t - 1} = 0) p(switch | X_t = x) +$$
+   $$+p(S_{t - 1} = 1) (1 - p(switch | X_t = x))$$
+   $$p(switch | X_t = x) = \frac{p(X_t = x| switch) * p(switch)}{p(X_t = x)}$$
+   \footnotesize$$p(X_t = x| switch) = p(X_t = x | S_t = 0) * p(S_{t - 1} = 1) + $$
+   $$+p(X_t = x | S_t = 1) * p(S_{t - 1} = 0)$$
+   $$p(X_t = x | S_t = 0) = \frac{p(S_t = 0 | X_t = x)p(X_t = x)}{sum_{x} p(S_t = 0 | X_t = x}$$
+   $$p(S_t = 0 | X_t = x)$$
+   \item May be different assumptions about last probability. For example $$p(S_t = 0 | X_t = x) = \frac{1}{1 + a^{|x - E_{min}| - |x - E_{max}|}}$$
 \end{itemize}
 \end{frame}
+
+\begin{frame}{One sliding window}
+ But it doesn't work!
+ 
+ \includegraphics[width = 10cm]{one_window_probabilities.png}
+\end{frame}
+
 
 \begin{frame}{Two Sliding Windows}
 \begin{itemize}
@@ -181,8 +206,14 @@
       \item difference of expectations
       \item Bhattacharyya distance
    \end{itemize}
-   \item Nothing of it correlates with the real $S$
+   \item Nothing of it correlates with the real $S$:
 \end{itemize}
+\begin{tabular}{cc}
+ Expectations & Bhattacharyya \\
+ \includegraphics[width = 5cm]{two_windows_expectation.png} &
+ \includegraphics[width = 5cm]{two_windows_bhattacharyya.png}
+\end{tabular}
+
 
 \end{frame}
 

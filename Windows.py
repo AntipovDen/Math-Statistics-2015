@@ -2,7 +2,7 @@ __author__ = 'dantipov'
 
 from random import random, randint
 from numpy import sum
-from math import exp
+from math import exp, sqrt, log
 from matplotlib import pyplot as plt
 
 
@@ -59,31 +59,37 @@ def windowAnalysing(x, window_size):
     min_exp, max_exp = min(window_expectations), max(window_expectations)
     print("min expectation:", min_exp)
     print("max expectation:", max_exp)
-
-    plt.plot([i + window_size for i in range(len(window_expectations))], window_expectations, 'r-')
     # try to calculate probabilities
-    for i in range(10):
-        window_expectations = smooth(window_expectations)
 
-    # def distance_prob(a):
-    #     return 1 / (1 + 1.5 ** (abs(a - min_exp) - abs(a - max_exp)))
-    #     # if a == 5:
-    #     #     return 0.25
-    #     # return 0.625
-    #
-    # print([distance_prob(a) for a in range(6)])
-    # p = [distance_prob(x[0])] #probability that x_i was given by the source with min expectation
-    #
-    # for i in range(1, len(x)):
-    #     p_no_switch, p_switch  = (1 - switch) * distance_prob(x[i]), switch * (1 - distance_prob(x[i]))
-    #     if p[-1] > 0.5:
-    #         p.append(p_no_switch)
-    #     else:
-    #         p.append(p_switch)
+    #p(x[i] = x)
+    p_x = [x.count(i) for i in range(n)]
+    #p(f[i] = 0| x[i] = x)
+    p_f0_with_x = [5/8, 5/8, 5/8, 5/8, 5/8, 1/4]
+    #p_f0_with_x = [1/(1 + 4 ** ((abs(i - min_exp) - abs(i - max_exp)) / (max_exp - min_exp))) for i in range(n)]
+
+    #p(x[i] = x | f[i] = 0/1)
+    p_x_with_f0 = [p_f0_with_x[i] * p_x[i] / sum([p_f0_with_x[j] * p_x[j] for j in range(n)]) for i in range(n)]
+    p_x_with_f1 = [(1 - p_f0_with_x[i]) * p_x[i] / sum([( 1 - p_f0_with_x[j]) * p_x[j] for j in range(n)]) for i in range(n)]
+
+    #dinamic calculation of p(f[i] = 0 | x[i] = x):
+    #p_x_with_switch -- p(x[i] = x | switch)
+    #p_x_with_no_switch -- p(x[i] = x | no switch)
+    #p_switch_with_x -- p(switch | x[i] = x)
+    #p_f0 -- p(f[i] = 0 | x[i] = x)
+
+    p_f0 = [p_f0_with_x[x[0]]]
+
+    for i in range(1, len(x)):
+        p_x_with_switch = p_x_with_f0[x[i]] * (1 - p_f0[-1]) + p_x_with_f1[x[i]] * p_f0[-1]
+        p_x_with_no_switch = p_x_with_f0[x[i]] * p_f0[-1] + p_x_with_f1[x[i]] * (1 - p_f0[-1])
+
+        p_switch_with_x = p_x_with_switch * switch / (p_x_with_switch * switch + p_x_with_no_switch * (1 - switch))
+        p_f0.append(p_f0[-1] * (1 - p_switch_with_x) + (1 - p_f0[-1]) * p_switch_with_x)
+    return p_f0
 
     # try to make result based on expectation vibration
 
-    # result = [0] * (window_size + 1) #TODO: analyse the begining of the vetor
+    # result = [0] * (window_size + 1)
     # for i in range(len(window_expectations) - 1):
     #     if window_expectations[i] > window_expectations[i + 1]:
     #         result.append(0)
@@ -110,7 +116,20 @@ def twoWindowsAnalysing(x):
     for i in range(1, len(x)):
         window1 = x[max(i - window_size, 0):i]
         window2 = x[i:min(i + window_size, len(x))]
-        res.append(sum(window1)/len(window1) - sum(window2)/len(window2))
+        res.append(windowExpectation(window2) - windowExpectation(window1))
+        # w1d = [0] * n
+        # w2d = [0] * n
+        # for j in window1:
+        #     w1d[j] += 1
+        # for j in window2:
+        #     w2d[j] += 1
+        # w1d = [j/sum(w1d) for j in w1d]
+        # w2d = [j/sum(w2d) for j in w2d]
+        # next_res = sum([sqrt(w1d[j] * w2d[j]) for j in range(n)])
+        # if next_res == 0:
+        #     res.append(float('inf'))
+        # else:
+        #     res.append(-log(next_res))
     res = [0] + res
     for i in range(50):
         res = smooth(res)
@@ -123,21 +142,20 @@ print(x)
 print(f)
 print("expectations:", expectation(f1), expectation(f2))
 
-res = twoWindowsAnalysing(x)
+res = windowAnalysing(x, int(1/switch))
 
 print(f)
 print(res)
 
-
-#exit(0)
 x1 = [i for i in range(l) if f[i] == 0]
 x2 = [i for i in range(l) if f[i] == 1]
-
-print(x1)
-print(x2)
 
 y1 = [res[x] for x in x1]
 y2 = [res[x] for x in x2]
 
-plt.plot(x1, y1, 'bo', x2, y2, 'ro')
+plt.plot(x1, y1, 'bo', label='honest dice')
+plt.plot(x2, y2, 'ro', label='dishonest dice')
+plt.legend(loc=1)
+plt.xlabel("i")
+plt.ylabel("p(S[i] = 0)")
 plt.show()
