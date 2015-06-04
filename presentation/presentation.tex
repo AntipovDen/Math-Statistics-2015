@@ -251,6 +251,7 @@
  \begin{itemize}
   \item Assume we have a number of minimum generations for generator, before it can switch
   \item Assume we know that number
+  \item Allows us to get more information on distributions
   \item Still optimizing as before
  \end{itemize}
 \end{frame}
@@ -259,8 +260,8 @@
  \begin{itemize}
   \item Helps keeping number of switches close to the original
   \item But does not really work
-\item Error piles up
-\item Correctly shows which generator produced the number in sequence in 75\% of cases
+  \item Error piles up and to the end of the sequence is useless
+  \item Correctly shows which generator produced the number in sequence in 75\% of cases
  \end{itemize}
 
  \tiny\begin{lstlisting}
@@ -269,10 +270,22 @@
  \end{lstlisting}
 \end{frame}
 
-\subsection{Whatever Vika is doing}
-%TODO may swap places in presentation
+\begin{frame}{The other improvement}
+ \begin{itemize}
+  \item Previosly GA used initial assumption for individual that Markov probabilities were (0.5, 0.5)
+  \item Now expand GA to use a lot of individuals initialized with (i, k) probabilities $i,k \in \{0.1,0.3,...,0.9\}$
+  \item Helps achieve better fitness values (compare 1.7751694726964613 and 1.7751695149629347)
+  \item Still works kinda bad
+ \end{itemize}
+  
+ Seems like using the Bhattacharyya distance as fitness function can get us only this far.
+\end{frame}
 
-\section{Conclusion} %\sextion lololo
+
+\subsection{Whatever Vika is doing}
+%TODO 
+
+\section{Conclusion}
 
 \begin{frame}{Conclusion}
  \begin{itemize}
@@ -283,6 +296,14 @@
  \end{itemize}
 
 \end{frame}
+
+\begin{frame}{Actual conclusion}
+ \begin{itemize}
+  \item 
+ \end{itemize}
+
+\end{frame}
+
 
 
 \end{document}
