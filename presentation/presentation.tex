@@ -108,6 +108,11 @@
    \end{itemize}
   \item Mutation: flipping random bit
   \item Crossover: single-point exchange of tails
+  
+  \item Generate a vector of numbers $S$
+  \item $S_i = k$ means that generator worked for $k$ steps
+  \item Mutation: expand, condense or exchange
+  \item Crossover: random cut and merge
  \end{itemize}
 \end{frame}
 
@@ -282,12 +287,36 @@
 \end{frame}
 
 
-\subsection{Whatever Vika is doing}
-%TODO 
+\subsection{Kolmogorov}
+\begin{frame}{Kolmogorov-Smirnov distance?}
+ \begin{itemize}
+  \item Using Kolmogorov-Smirnov test works as bad as previous methods
+  \item Assuming switch points and measuring the distribution do not help detect the real points
+  \item Looks like measuring distances does not really help with solving the problem as is
+ \end{itemize}
+\end{frame}
+
 
 \section{Conclusion}
 
-\begin{frame}{Conclusion}
+
+\begin{frame}{Actual conclusion}
+ \begin{itemize}
+  \item Maximizing distributions' distance seems to not work
+  \item The problem seems to be that these measurements (and ideas like measuring expectancy) have little meaning for the problem itself
+  \item The DCP problem in proposed statement seems too vague to get a feasible solution without setting up additional limits 
+ \end{itemize}
+
+\end{frame}
+
+\begin{frame}{Questions?}
+ \Huge\centering{Questions?}
+\end{frame}
+
+
+
+
+\begin{frame}{Actual conclusion}
  \begin{itemize}
   \item such conclusion
   \item much results
@@ -296,14 +325,6 @@
  \end{itemize}
 
 \end{frame}
-
-\begin{frame}{Actual conclusion}
- \begin{itemize}
-  \item 
- \end{itemize}
-
-\end{frame}
-
 
 
 \end{document}
